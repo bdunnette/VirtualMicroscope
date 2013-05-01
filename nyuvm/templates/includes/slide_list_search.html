@@ -1,0 +1,50 @@
+<h3>Search Results ({{found_slides.count}}):</h3>
+<table class="table table-striped">
+	{% for s in found_slides %}
+		<tr>
+		<td>
+			{% ifequal addtotype 'exam' %}
+			<a href="{{URL_ROOT}}/exam/edit/{{exam.id}}/addslide/{{addtoid}}/{{s.id}}/" class="btn btn-success btn-mini">Add</a>
+			{%else%}
+			<a href="{{URL_ROOT}}/editcollection/{{addtoid}}/add/{{s.id}}/" class="btn btn-success btn-mini">Add</a>
+			
+			{%endifequal%}
+			
+		</td>
+		<td>
+		<a href="{{URL_ROOT}}/u/{{s.id}}/compact/" style="padding-right:5px;"  rel="1" class="newWindow"><img src="{{s.url}}/tile_0_0_0.jpg" width="45px" height="45px" alt=""></a>
+		</td>
+		<td>
+		<a href="{{URL_ROOT}}/u/{{s.id}}/compact/" style="padding-right:5px;"  rel="1" class="newWindow"><strong>{{s|truncatechars:60}}</strong></a>
+		<br><a href="{{URL_ROOT}}/u/{{s.id}}/compact/" style="padding-right:5px;"  rel="1" class="newWindow">Preview Slide</a>
+		{% for c in s.collection_slides.all%}
+			{%if forloop.first%}
+				<br>Also in: 
+			{%endif%}
+			<a href="{{URL_ROOT}}/collection/{{c.id}}/">{{c.label}}</a>{%if not forloop.last%}, {%endif%}
+		{%endfor%}
+		{% for e in s.examquestionslides.all%}
+			{%if forloop.first%}<br><span class="label label-important">In exam: {%endif%}
+			{% for x in e.examquestions.all%}
+				{{x.label}}
+				{%if not forloop.last%}, {%endif%}
+			{%endfor%}	</span>		
+		{%endfor%}				
+		
+		</td>
+		</tr>
+	{%endfor%}
+</table>
+<script type="text/javascript">
+	$(document).ready(function() {
+	//generic new window function
+	var windowSizeArray = [ "width=200,height=200","width=700,height=400,scrollbars=yes" ];
+	$('.newWindow').click(function (event){
+		var url = $(this).attr("href");
+		var windowName = "popUp";//$(this).attr("name");
+		var windowSize = windowSizeArray[$(this).attr("rel")];
+		window.open(url, windowName, windowSize);
+		event.preventDefault();
+		});
+	});
+</script>

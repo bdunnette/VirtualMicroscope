@@ -1,0 +1,151 @@
+{% extends "includes/base.html" %}
+{% block head %}
+<style>
+	body { height: 100%; width: 100%; position: absolute; padding:0px; {% if compact %}margin-top:0px;{%endif%} } footer {display:none;} #map { width: 100%; color: grey; background-color:black; } .navbar { margin:0px; padding:0px; } /* Subnav */ .subnav { background-color: #2c2c2c; width: 100%; } .slide-title { color:#005580; font-size:125%; font-weight: bold; padding-left:5px; } .subnavlink { margin: 0; margin-top: 2px; margin-bottom: 5px; padding-right: 10px; padding-left: 10px; border-left: 1px #B3B3B3 solid; color: #919191; } .slidetitle { font-family: sans-serif; font-size: 16px; font-weight: 300; text-align: right; line-height: 22.5px; /* Fallback for web browsers that don't support RGBa */ /* RGBa with 0.6 opacity */ background-color: rgba(0, 0, 0, 0.6); /* For IE 5.5 - 7*/ filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000); /* For IE 8*/ -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000, endColorstr=#99000000)"; padding: 2px; color: #F5F5F5; border: 1px solid rgba(0, 0, 0, 0.05); -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05); -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05); box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05); } .slidebutton { margin-top:5px; width:115px; text-align:right; padding-right:5px; margin-right:10px; } /* Fix for Bootstrap interfering with Google Maps CSS */ img[src^="http://maps.gstatic.com/"] { max-width: none; } #map img { max-width: none; }
+</style>
+
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false{% if API_KEY %}&key={{API_KEY}}{%endif%}"></script>
+
+{% if user.is_authenticated %}
+<script type="text/javascript" src="{{STATIC_URL}}js/bootstrap-wysihtml5/wysihtml5-0.3.0_rc2.min.js"></script>
+<script type="text/javascript" src="{{STATIC_URL}}js/bootstrap-wysihtml5/bootstrap-wysihtml5.js"></script>
+{% endif %}
+
+<script type="text/javascript">
+	{% include "js/map_functions.js" %}
+</script>
+
+{% endblock %}
+{% block layout%}none{% endblock layout%}
+{% block content %}
+{% if user.is_authenticated %}	
+<div id="linktoview" class="modal hide">
+	<div class="modal-header"><a class="close" data-dismiss="modal">×</a><h3>Share this slide</h3></div>
+	<div class="modal-body" id="">
+	<h4>Link to current view <small><br>right click and 'copy shortcut' to copy it to your clipboard</small></h4>
+	<span id="linktoviewbody"></span><br><br>
+
+	<a class="btn btn-default" id="emaillink" href="#"><i class="icon-envelope"></i> Email this link</a>
+
+	{% if user.is_authenticated %}		
+		<hr>
+		<h4><a href="#" onclick="javascript:$('#saveviewform').toggle();">Save View to Favorites</a><br><small>Save the current view (x, y, and zoom) to your Favorites collection.</small></h4>
+		<div class="hide" id="saveviewform">
+		Title for this view: <input type="text" class="span2" id="viewtitle">
+		<input type="button" name="submit" value="Save!" id="submit" class="btn btn-primary  btn-mini" onclick="javascript:addviewtofavs($('#viewtitle').val());"/>
+		<a href="#" class="btn btn-default btn-mini" onclick="javascript:$('#saveviewform').hide();">Cancel</a>
+		</div>
+	{% endif %}
+		<hr>
+		<p><h4><a href="#" onclick="javascript:$('#embedform').toggle();">Embed</a><br><small>Embed an NYUVM slide in another website, lab manual, and more.</small></h4>
+		<div class="hide" id="embedform">
+			Copy and paste the embed code below.
+			<textarea class="span5"><iframe width="640" height="400" src="{{URL_ROOT}}/v/{{collectionslide.id}}/compact/" frameborder="0"></iframe></textarea>
+		</div>		
+		</p>	
+	</div>
+	<div class="modal-footer">	<a href="#" class="btn" data-dismiss="modal">Close</a></div>
+</div>
+{% endif %}
+
+<div class="subnav">
+	<div class="pull-right" style="margin-right:5px;">
+		{% if not compact %}
+			{% if collectionslide.relateslides %}
+			<a class="subnavlink dropdown">
+				<a href="#"  class="dropdown-toggle"  data-toggle="dropdown">Related slides<b class="caret"></b></a>
+				<ul class="dropdown-menu">
+					<li><a href="{{URL_ROOT}}/viewer/{{r.id}}/">{{r}}</a></li>					
+				</ul>
+			</a>
+			{%endif%}
+		{%else%}
+			{% if collectionslide %}
+				<a class="subnavlink" href="{{URL_ROOT}}/v/{{collectionslide.id}}/">View full version</a>
+			{%endif%}	
+		{%endif%}
+	</div>
+</div>
+{%endblock%}
+{% block slideviewer %}
+
+	<div id="map"></div>	
+
+	{% if user.is_authenticated and follow %}
+		{% include container_template %}
+	{%endif%}	
+	{% if user.is_authenticated and transcript %}
+		{% include transcript_template %}
+	{%endif%}	
+
+	<div  id="mapbutton" class="hide" style="margin-top:10px;margin-right:10px;z-index:999;">
+		<div class="slidetitle">
+			{% if collectionslide %}{{collectionslide}}{%else%}{{slide.label}}{%endif%}
+			{% if follow %}
+			{% ifequal follow.author user %}
+				<br><span  class="label label-success" >Leading Follow: {{follow.label}} </span></a><br>
+			{% else %}
+				<br><span  class="label label-info">Following: {{follow.label}} </span></a><br>
+			{%endifequal%}
+			{% endif %}	
+		</div>
+		
+		{% if user.is_authenticated %}		
+		<a class="btn btn-mini pull-right slidebutton" href="javascript:linktoview();" ><i class="icon-signal"></i> Share / Save</a><br clear="all">
+		{% endif %}
+		
+		<a class="btn btn-mini pull-right slidebutton" href="javascript:showmetadata({{collectionslide.id}});" id="{{collectionslide.id}}" ><i class="icon-info-sign"></i> Info</a><br clear="all">
+		{% if user in collectionslide.collection.authors.all or user.is_superuser %}
+			<a class="btn btn-mini btn-primary pull-right slidebutton" href="{{URL_ROOT}}/editcollectionslide/{{collectionslide.id}}/" ><i class="icon-edit icon-white"></i> Edit</a><br clear="all">
+		{% endif %}
+
+		{% if related_slides %}
+		<div class="pull-right" id="related-menu-container"  style="clear:right;">
+			<a class="btn dropdown-toggle btn-mini slidebutton" data-toggle="dropdown" href="#">{{related_slides.count}} Related Slide{{ related_slides|pluralize }} <span class="caret"></span></a>
+			<ul class="dropdown-menu" id="related-menu">
+				{% for r in related_slides %}
+					<li><a href="{{URL_ROOT}}/v/{{r.id}}">{%ifequal r collectionslide%}*{%endifequal%}{{r}} &nbsp;<span style="font-size:85%;color:grey;">(ID: {{r.id}} {%if r.slidebox%} Box: {{r.slidebox}}{%endif%}{%if r.slidenumber%} Number: {{r.slidenumber}}{%endif%})</span></a></li>
+				{%endfor%}
+			</ul>
+		</div>	
+		<br clear="all">
+		{% endif %}
+		
+		
+		{% if user.is_authenticated %}	
+			{% if not follow %}
+			<a class="btn btn-mini pull-right slidebutton" href="javascript:togglemarkers();"><i class="icon-map-marker"></i> Toggle Markers </a><br clear="all">
+			{% endif %}
+		
+			{% if user.is_authenticated and not follow%}
+					<a class="btn btn-mini pull-right slidebutton" href="javascript:addmarker()" id="addmarkerbutton" ><i class="icon-screenshot"></i> Add a Marker</a><br clear="all">
+			{% else %}
+					{% ifequal follow.author user%}
+						<a class="btn btn-mini pull-right slidebutton" href="javascript:addmarker()" id="addmarkerbutton" ><i class="icon-screenshot"></i> Add a Marker</a><br clear="all">
+					{% endifequal %}		
+			{%endif%}				
+			<div class="pull-right" id="faculty-menu-container" style="zzclear:right;">
+				<a class="btn dropdown-toggle btn-danger btn-mini slidebutton" data-toggle="dropdown" href="#" >Faculty Markers <span class="caret"></span></a>
+				<ul class="dropdown-menu" id="faculty-menu" ></ul>
+			</div><br clear="all">
+			
+			<div class="pull-right" id="student-menu-container" style="clear:right;">
+				<a class="btn btn-inverse btn-mini slidebutton" data-toggle="dropdown" href="#" >Community Markers <span class="caret"></span></a>
+				<ul class="dropdown-menu" id="student-menu"></ul>
+			</div><br clear="all">	
+		{% endif %}
+		
+	</div>
+	{% if not compact %}
+		<!-- Mini Map -->
+		<div id="mini_map" style="width:168px;height:128px;border: solid 1px gray;display:none;"></div>
+		<div id="collapse_mini_map" style="display:none;"> <a href="#" onclick="$('#mini_map').toggle('slide'); $('#expand_mini_map').toggle('slide'); return false;"><i class="icon-remove-circle"></i></a> </div>
+	{% endif %}
+	{% if user.is_authenticated %}
+		<!-- InfoWindowEditor -->
+		<div id="markereditmodal" class="modal hide" style="width:600px;">
+			<div class="modal-body" id="markereditformdiv" style="max-height:500px;"></div>
+		</div>	
+	{% endif %}
+
+{% endblock %}

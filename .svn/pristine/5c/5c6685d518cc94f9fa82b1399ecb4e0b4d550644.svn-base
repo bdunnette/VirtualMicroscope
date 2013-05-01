@@ -1,0 +1,98 @@
+{% extends "includes/base.html" %}
+{% block head %}
+
+<script type="text/javascript">
+	$(document).ready(function() {
+	
+		$('.favoriteview').click(function (event){
+			$('#metadatamodal').load('{{URL_ROOT}}/f/'+$(this).attr('id')+'/'{% if favspage %}+'?f=1'{%endif%});
+			$('#metadatamodal').modal('show');
+		});
+	});
+
+</script>
+
+{% endblock %}
+{% block content %}
+
+<ul class="nav nav-list" data-spy="affix" data-offset-top="300px" style="margin-top:50px;width:200px;">
+  <li><a href="#slides"><i class="icon-chevron-right"></i> Favorite Slides</a></li>
+  <li><a href="#views"><i class="icon-chevron-right"></i> Favorite Views</a></li>
+  {% if marker_favorites %}
+  <li><a href="#markers"><i class="icon-chevron-right"></i> Favorite Markers</a></li>
+  {%endif%}
+  <li><a href="#addedmarkers"><i class="icon-chevron-right"></i> Your Markers</a></li>
+  <li><a href="#follows"><i class="icon-chevron-right"></i> Your Follows</a></li>
+</ul>
+
+	
+<div style="margin-left:235px;">
+		<h3><a name="slides"></a>Favorite Slides</h3>
+		<ul class="thumbnails">
+		{% for s in slides %}	
+			{% include "includes/slide_thumbnail.html" with removalid=s.id s=s.slide del=true id=s.id %}
+		{%empty%}
+			<li>You haven't added any slides yet.  Click the 'add to my favorites' links to add any slides you see into your personal collection here.</li>
+		{%endfor%}
+		</ul>
+		
+		<h3><a name="views"></a>Favorite Views</h3>
+			<ul class="thumbnails">
+			{% for s in views %}	
+				{% include "includes/slide_thumbnail.html" with s=s.slide removalid=s.id view=s urlparams=s.urlparams id=s.id %}
+			{%empty%}
+				<li>You haven't added any views yet.  Click the 'Save view' link while viewing a slide to add to your personal collection here.</li>
+			{%endfor%}
+			</ul>
+		
+		{% if marker_favorites %}
+			<h3><a name="markers"></a>Favorite Markers:</h3>
+			<table class="table table-striped">
+			{% for m in marker_favorites %}
+				{% for s in m.marker.slide_markers.all %}
+				<tr>
+				<td style="width:30px;">
+					<a href="{{URL_ROOT}}/v/{{s.id}}/?m={{m.marker.id}}" style="padding-right:5px;"><img src="{{s.slide.url}}/tile_0_0_0.jpg" width="25px" height="25px" alt=""></a></td>
+				<td>
+				<a href="{{URL_ROOT}}/v/{{s.id}}/?m={{m.marker.id}}" style="padding-right:5px;" >{{m.marker.label|truncatechars:60}}</a><br>
+				<a href="{{URL_ROOT}}/editmyslides/delmarker/{{m.id}}/"><i class="icon-remove-sign"></i> Remove from favorites</a>
+				</td>
+				</tr>
+				{%endfor%}
+			{%endfor%}
+			</table>
+		{%endif%}
+		
+
+		{% if marker_slides %}
+			<h3><a name="addedmarkers"></a>Slides you have added markers to:</h3>
+			<table class="table table-striped">
+			{% for s in marker_slides %}
+				<tr>
+				<td>
+				<a href="{{URL_ROOT}}/v/{{s.id}}/" style="padding-right:5px;" >{{s|truncatechars:60}}</a> in the collection <a href="{{URL_ROOT}}/collection/{{s.collection.id}}/">{{s.collection}}</a>
+
+				</td>
+				</tr>
+			{%endfor%}
+			</table>
+		{%endif%}
+		
+		
+		{% if myfollows %}
+			<h3><a name="follows"></a>Follows you participated in:<small><br>Click on a name for a transcript of slides viewed in the follow</small></h3>
+			<table class="table table-striped">
+			{% for f in myfollows %}
+				<tr>
+				<td><i class="icon-chevron-right"></i> {% if f.slides.all.0 %}<a href="{{URL_ROOT}}/transcript/{{f.id}}/{{f.slides.all.0.id}}/" style="padding-right:5px;" >{%endif%}{{f}}</a>  </td>
+				<td>{{f.starttime|date:"SHORT_DATETIME_FORMAT"}}</td>
+				<td>You {% ifequal f.author user %}lead{%else%}followed{%endifequal%} this follow.</td>
+				
+				</tr>
+			{%endfor%}
+			</table>
+		{%endif%}
+	
+	</div>
+	<br clear="all">
+{% endblock %}

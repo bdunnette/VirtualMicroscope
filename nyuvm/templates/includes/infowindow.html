@@ -1,0 +1,93 @@
+<div id="infowrapper" style="padding-bottom:50px;min-width:350px;;">
+	<div id="infotoolbar" style="border-bottom: 1px solid #ccc;margin-right:45px;width:100%;" class="pull-left">
+		{% if user.is_authenticated %}
+		{% if not alreadyfavorite %}
+		<a onclick="javascript:addmarkertofavs({{slidemarker.id}});return null" style="padding-left:5px;" id="addmarkertofavslink"><i class="icon-plus-sign"></i> Add to Favorites</a> 
+		{%endif%}
+		{% if editable %}
+			<a href="http://dei.med.nyu.edu/help/virtualmicroscope#markers" target="_blank" style="padding-left:5px;"><i class="icon-question-sign"></i> Help</a>
+			<a onclick="javascript:showmarkereditor({{slidemarker.id}});return null" style="padding-left:5px;"><i class="icon-pencil"></i> Edit</a>	
+
+
+		{% endif %}
+		{% if deletable %}
+			<a onclick="javascript:deletmarker({{slidemarker.id}});return null" style="padding-left:5px;"><i class="icon-trash"></i> <font color="red">Delete</font></a>
+		{%endif%}
+
+		{% if adoptable %}
+			<a onclick="javascript:adoptmarker({{slidemarker.id}});return null" style="padding-left:5px;"><i class="icon-user"></i> Adopt</a>
+		{%endif%}
+
+		{% if votable %}
+		
+		<a title="Vote up: I like this marker" onclick="javascript:voteonmarker({{slidemarker.id}},1);return null"  style="padding-left:5px;"><i class="icon-arrow-up"></i></a>
+		{{slidemarker.score}}
+		<a title="Vote down: I don't like this marker"  onclick="javascript:voteonmarker({{slidemarker.id}},0);return null"  style="padding-left:5px;"><i class="icon-arrow-down"></i></a>
+
+		{%else%}
+
+				{% if not facultymarker %}
+				<span  style="padding-left:5px;">{{slidemarker.score}} point{{slidemarker.score|pluralize}}</span>
+				{%endif%}
+
+			{%endif%}
+
+		{%endif%}
+	</div>
+	<br clear="all">
+	<div class="">
+		{% if not slidemarker.label %}
+			{% if editable %}
+				<p>
+				<span class="label label-warning">Note</span> This marker needs a title before others can see it. <strong><a  href="#" class="" onclick="javascript:showmarkereditor({{slidemarker.id}});return null" >Click to edit</a>.</strong>
+				</p>
+			{% endif %}
+		{%else%}	
+			<h4 style="margin-top:9px;">{{slidemarker.label|default_if_none:''}}</h4>
+			{% ifequal slidemarker.type 2 %}
+				
+				<div id="inputarea">
+					<textarea class="span5 required" id="userresponse"></textarea>
+					<br><a href="#" id="markersubmitbtn" class="btn btn-mini" onclick="javascript:processassessmentsubmission();return null;">Check answer</a>
+					<div id="errormessage"></div>
+					
+					<br clear="all"><br clear="all">
+				</div>	
+				<div id="responsepreamble" class="hide"  style="border-top: 1px solid #ccc;padding-top:3px;">
+					<p><strong>You said: </strong><i id="userresponse2"></i></p>
+					<strong>The author said:</strong>
+					
+				</div>	
+			{% endifequal %}
+			<span id="htmlcontent" {% ifequal slidemarker.type 2 %} class="hide"{% endifequal %}>
+				<p>{{slidemarker.html|default_if_none:''|safe}}</p>
+			</span>
+		{%endif%}
+		{% if user.is_authenticated %}
+			&nbsp;&nbsp;&mdash;Authored by <a href="mailto:{{slidemarker.author.email}}">{{slidemarker.author.first_name}} {{slidemarker.author.last_name}}</a> on {{slidemarker.timestamp|date:"SHORT_DATE_FORMAT"}}
+			
+			{% if slidemarker.original_author %}
+			<br>&nbsp;&nbsp;&mdash;Originally authored by <a href="mailto:{{slidemarker.original_author.email}}">{{slidemarker.original_author.first_name}} {{slidemarker.original_author.last_name}}</a>
+			{%endif%}
+				{% if editable and slidemarker.label %}
+				
+				{% ifequal slidemarker.author user %}
+					<br>
+					{% if slidemarker.public %}
+						This marker is public and logged-in users can see it. <a onclick="javascript:togglemarkerpublicity({{slidemarker.id}});return null">Make it private.</a>
+					{%else%}
+						{% if expired %}
+							This marker has expired and only you can see it.
+						{% else %} 
+							<i class="icon-lock"></i> This marker is private and only you can see it. <a onclick="javascript:togglemarkerpublicity({{slidemarker.id}});return null">Make it public.</a>
+						{%endif%}
+					{%endif%}
+				{% endifequal %}					
+				
+			{%endif%}
+
+			
+		{%endif%}
+
+	</div>
+</div>

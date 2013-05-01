@@ -1,0 +1,64 @@
+{% extends "includes/base.html" %}
+{% block head %}
+	<script type="text/javascript" src="{{STATIC_URL}}js/jquery-ui-1.8.23.custom.min.js"></script>	
+	<script>
+	$(function() {
+		$( "#sortable" ).sortable( {
+		  update : function () { 
+			$.post("{{URL_ROOT}}/editcollection/{{collection.id}}/reorder/", {data:$('#sortable').sortable("serialize",{})});
+		  }
+		});		
+				
+		$( "#sortable" ).disableSelection();
+	});
+	function search(term){
+		$('#searchresult').load('{{URL_ROOT}}/authorsearch/collection/{{collection.id}}/?c=1&q='+term);	
+	}
+	</script>
+
+{% endblock %}
+{% block content %}
+<h2>Editing: {{collection}} <small><a href="{{URL_ROOT}}/collection/{{collection.id}}/">Return to Collection page</a></h2>
+<div class="row-fluid">
+	<div class="span6" id="sortable">
+	<h3>Collection Slides:<br><small>Drag to reorder, click image or title to preview</small></h3>
+	{% for s in slides %}
+	
+		<div class="alert alert-info"  id="id_{{s.id}}">
+			<table width="100%">
+			<tr>
+			<td width="75">
+				<i class="icon-resize-vertical"  ></i>
+				<a href="{{URL_ROOT}}/v/{{s.id}}/compact/" style="padding-right:5px;"  rel="1" class="newWindow"><img src="{{s.slide.thumbnail_path}}" width="45px" height="45px" alt=""></a>	
+				<br><center><small>{{s.viewcount|default_if_none:"0"}} view{{s.viewcount|pluralize}}</small></center>
+			</td>	
+			<td>
+				<strong><a href="{{URL_ROOT}}/v/{{s.id}}/compact/" rel="1" class="newWindow">{{s|truncatechars:60}}</a></strong>
+				<br><a class="metadata" id="{{s.id}}">Slide Information</a>					
+			</td>
+			
+			<td width="75" align="center">
+			<center>
+				<a href="{{URL_ROOT}}/editcollectionslide/{{s.id}}/" class="btn btn-primary btn-mini">Edit</a><br>
+				<a href="{{URL_ROOT}}/editcollection/{{collection.id}}/del/{{s.slide.id}}/" class="confirm btn btn-danger btn-mini" data-text="Removing this slide from the collection will delete any metadata or notes you have added here, as well as all markers created for this slide within this program.  This will also remove this slide from any user's Favorites lists. <br><br>Are you sure you want to proceed?">Remove</a>
+			</center>
+			</td>
+			</tr>	
+			</table>
+		</div>
+
+	{%endfor%}
+	</div>
+	
+	
+	<div class="span6" style="overflow:hidden;">
+		<h3>Search for slides to add to this collection</h3>
+		
+		<input id="searchterm" name="q" class="span3"/>
+		<input type="button" name="submit" value="Search" id="submit" class="btn btn-primary" onclick="javascript:search($('#searchterm').val());"/>
+		<a href="{{URL_ROOT}}/editcollection/{{collection.id}}/" class="btn" >Reset</a>
+		<br clear="all">
+		<div id="searchresult"></div>
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+<!doctype html public "-//W3C//DTD HTML 4.01 Transitional//EN">
+<head>
+<title>NYU School of Medicine Virtual Microscope</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="/virtualmicroscope/static/css/bootstrap.min.css">
+
+</head>
+<body >
+<div class="container-fluid">
+  <div class="hero-unit">
+	<h2>404 Page Not Found </h2>
+	The NYU School of Medicine Virtual Microscope can't find that page.  
+	<br><a href="/virtualmicroscope/">Click here to return to the home page</a> <br>Email:  <a href="mailto:alex.support@med.nyu.edu" target="_blank">alex.support@med.nyu.edu</a>
+	</div>
+
+</div>

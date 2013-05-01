@@ -1,0 +1,14 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+ 
+{% block title %}{{ title }} | {% trans 'Some Organisation' %}{% endblock %}
+ 
+{% block branding %}
+<style type="text/css">
+  #header
+  {  }
+</style>
+<h1 id="site-name">{% trans 'NYU Virtual Microscope Admin Site' %}</h1>
+{% endblock %}
+ 
+{% block nav-global %}{% endblock %}

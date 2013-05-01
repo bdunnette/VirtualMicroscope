@@ -1,0 +1,41 @@
+{% extends "includes/base.html" %}
+{% block head %}
+<style>
+.hero-unit {
+margin-top:5px;
+}
+</style>
+{% if GAKEY %}
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', '{{GAKEY}}']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+{%endif%}
+{% endblock %}
+{% block content %}
+  <div class="hero-unit">
+	<h1>NYU Virtual Microscope</h1>
+	<p>Get started by searching for a slide or using the Collections menu above. </p>
+ 	<img src="{{STATIC_URL}}images/som_logo_black.png" > 
+  </div>
+
+  <div class="row-fluid">
+	<div class="span12">
+	  <h4>About</h4>
+	   <p>This application was created by the NYU School of Medicine <a href="http://dei.med.nyu.edu" target="_blank">Division of Educational Informatics</a>.
+			The Virtual Microscope uses the <a href="http://code.google.com/apis/maps/documentation/" target="_blank">Google Maps API</a>
+			to display, annotate, and navigate digital slides. A detailed description of the system and its impact is available at BMC medical education: <a href="http://www.biomedcentral.com/1472-6920/11/4" target="_blank">Enhanced virtual microscopy for collaborative education. Triola M, Holloway W. BMC Medical Education 2011, 11:4 (26 January 2011)</a>
+	   </p>
+		The NYU Virtual Microscope allows both learners and faculty to annotate slides with community peer-review.  It includes a practical exam system, and each slide can include metadata from controlled vocabularies to classify and search for slides.  We have released the source code of the application as <a href="http://code.google.com/p/virtualmicroscope/" target="_blank">an open-source project on Google Code</a>.</li>
+	</div>
+  </div>
+{% endblock %}

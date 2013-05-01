@@ -1,0 +1,44 @@
+{% extends "includes/base.html" %}
+{% block head %}
+<style>
+body {
+    width: 100%;
+    position: absolute;
+}
+
+.container-fluid { 
+    min-height: 100%;
+    
+}
+
+#slideframe {
+    position: fixed;
+    top: 45px;
+    bottom: 0;
+    left: 300px;
+    right: 0;
+    margin-right:10px;
+}
+
+
+footer {
+	display:none;
+}
+</style>
+{% endblock %}
+{% block content %}
+	<div class="row-fluid">
+	<div class="span4">
+	<form class="form-horizontal" action = "{{URL_ROOT}}/editcollectionslide/{{collectionslide.id}}/" method ="POST">
+		{{ formset }}
+		<br><br>
+		<input name="submit" type="submit" value="Save" class="btn btn-primary"> 
+		<a href="{{URL_ROOT}}/editcollection/{{collectionslide.collection.id}}/" class="btn btn-default">Cancel</a>
+	</form>
+	</div>
+	
+	<div class="" id="slideframe">
+		<iframe  src="{{URL_ROOT}}/v/{{collectionslide.id}}/compact/" width="100%" height="100%" scrolling="no" frameborder="0">[Your browser does not support frames or is currently configured not to display frames. Please use an up-to-date browser that is capable of displaying frames.]</iframe>
+	</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "includes/base.html" %}
+{% block head %}{% endblock %}
+{% block content %}
+<h2>Search results for: {{query_string}}</h2>
+
+{% if not found_slides %}
+    <h4>That search term produced no results.</h4>
+
+{%endif %}
+
+<ul class="thumbnails">
+{% for s in found_slides %}
+	{% include "includes/slide_thumbnail.html" %}
+{%endfor%}
+</ul>
+{% endblock %}

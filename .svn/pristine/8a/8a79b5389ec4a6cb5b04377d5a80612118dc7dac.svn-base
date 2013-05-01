@@ -1,0 +1,46 @@
+{% extends "includes/base.html" %}
+{% block head %}
+
+{% if GAKEY %}
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', '{{GAKEY}}']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+{%endif%}
+
+{% endblock %}
+{% block content %}
+	<h2>{{collection}}
+	{% if user in collection.authors.all or user.is_superuser %}
+	<small><a class="btn btn-primary btn-mini" href="{{URL_ROOT}}/editcollection/{{collection.id}}/">Edit</a></small>
+	{% endif %}
+	</h2>
+	<ul class="pager">
+		 {% if slides.has_previous %}
+		<li class="">
+		<a href="?page={{ slides.previous_page_number }}">&larr; Prev</a>
+		</li>
+		{% endif %}
+		<li><h3 style="display:inline;"> Page {{ slides.number }} of {{ slides.paginator.num_pages }} </h3></li>
+		{% if slides.has_next %}
+		<li class="">
+		<a href="?page={{ slides.next_page_number }}">Next &rarr;</a>
+		</li>
+		{% endif %}
+	</ul>
+	
+	<ul class="thumbnails">
+	{% for s in slides %}
+		{% include "includes/slide_thumbnail.html" with  page=slides.number %}
+	{%endfor%}
+	</ul>
+{% endblock %}

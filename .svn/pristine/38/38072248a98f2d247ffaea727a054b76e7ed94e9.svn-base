@@ -1,0 +1,201 @@
+{% load compress %}
+<!DOCTYPE html>
+<head>
+<title>NYU School of Medicine Virtual Microscope</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+<link rel="apple-touch-icon" href="{{STATIC_URL}}images/nyu_icon_57.png" />
+<link rel="apple-touch-icon" sizes="72x72" href="{{STATIC_URL}}images/nyu_icon_72.png" />
+<link rel="apple-touch-icon" sizes="114x114" href="{{STATIC_URL}}images/nyu_icon_114.png" />
+<link rel="apple-touch-icon" sizes="144x144" href="{{STATIC_URL}}images/nyu_icon_144.png" />
+<link rel="shortcut icon" href="{{STATIC_URL}}images/favicon.ico"/>
+
+{% compress js %}
+<script  type="text/javascript" charset="utf-8" src="{{STATIC_URL}}js/jquery-1.8.0.min.js"></script>
+<script  type="text/javascript" charset="utf-8" src="{{STATIC_URL}}js/jquery.form.js"></script>
+<link rel="stylesheet" href="{{STATIC_URL}}js/bootstrap-wysihtml5/bootstrap-wysihtml5.css"/>
+<script  type="text/javascript" charset="utf-8" src="{{STATIC_URL}}js/bootstrap.min.js"></script>
+<script  type="text/javascript" charset="utf-8" src="{{STATIC_URL}}js/bootbox.min.js"></script>
+{% endcompress %}
+
+{% block coreheader %}{% endblock coreheader%}
+
+<script type="text/javascript">
+
+	$(document).ready(function() {
+	
+		//generic new window function
+		var windowSizeArray = [ "width=200,height=200","width=700,height=400,scrollbars=yes" ];
+		$('.newWindow').click(function (event){
+			var url = $(this).attr("href");
+			var windowName = "popUp";//$(this).attr("name");
+			var windowSize = windowSizeArray[$(this).attr("rel")];
+			window.open(url, windowName, windowSize);
+			event.preventDefault();
+			//example:
+			//<a href="http://www.flashmn.com/" rel="0" class="newWindow" >click me</a>
+			//<a href="http://www.mnswf.com/" rel="1" class="newWindow" >click me</a>
+			});
+	
+		//generic confirm dialog
+		$("a.confirm").click(function(e) {
+				e.preventDefault();
+				thelink =  $(this).attr('href');
+				bootbox.confirm($(this).attr("data-text"), function(result) {
+					if (result) {
+						window.location=thelink;
+					}
+				});
+			});
+
+		$('.metadata').click(function (event){
+			$('#metadatamodal').load('{{URL_ROOT}}/m/'+$(this).attr('id'){%if collectionslide%}+'/{{collectionslide.id}}/'{%endif%}{% if favspage %}+'?f=1'{%endif%});
+			$('#metadatamodal').modal('show');
+			return false;
+		});	
+
+		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+			document.title = 'NYU VM';
+			$("a").click(function (event) {
+				event.preventDefault();
+				window.location = $(this).attr("href");
+			});		
+		}		
+	});
+	
+	function showmetadata(id){
+		$('#metadatamodal').load('{{URL_ROOT}}/m/'+id {%if collectionslide%}+'/{{collectionslide.id}}/'{%endif%}{% if favspage %}+'?f=1'{%endif%});
+		$('#metadatamodal').modal('show');	
+	}	
+
+</script>
+
+<!-- CSS and Fonts -->
+{% compress css %}
+<link rel="stylesheet" href="{{STATIC_URL}}css/bootstrap.min.css" type="text/css" charset="utf-8">
+<style type="text/css">
+.navbar-inner { font-size:90%; } .navbar .nav > li > a { padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px; } .metadatalink { width: 193px; position: absolute; left: 2; bottom: 1px; } .error_message{ border 1px solid green; position:absolute; top: 43px; left:0; right:0; margin-left:auto; margin-right:auto; width:33%; z-index: 999; }
+</style>
+{% endcompress %}
+{% block head %}{% endblock head%}
+</head>
+
+<body>
+{% if messages %}
+	{% for message in messages %}
+		{% ifchanged message.tags  %}{% if not forloop.first %}</div>{%endif%}{% endifchanged %}					
+		{% ifchanged message.tags  %}<div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} error_message">{% endifchanged %}
+		<a class="close" data-dismiss="alert" href="#">×</a>
+		{{ message|safe }}<br>
+		{% if forloop.last %}</div>{%endif%}
+	{% endfor %}
+{% endif %}
+
+{% if not compact %}
+
+<div class="navbar navbar-inverse navbar-static-top">
+  <div class="navbar-inner" >
+	<div class="container-fluid">
+	  <a href="{{URL_ROOT}}/" class="brand">NYU Virtual Microscope</a>
+	  <div class="nav-collapse">
+		<ul class="nav">
+			<li class="dropdown">
+				<a href="#" class="dropdown-toggle"  data-toggle="dropdown">Collections <b class="caret"></b>
+				</a>
+				<ul class="dropdown-menu">
+					{%if collectionslide.collection %}
+					<li ><a href="{{URL_ROOT}}/collection/{{collectionslide.collection.id}}/{% if page %}?page={{page}}{%endif%}"><span style="font-weight:bold;color:#1900A9";">Return to {{collectionslide.collection}}</b></font></a></li>
+					<li class="divider"></li>
+					{%endif%}
+								
+					{% if user.is_authenticated %}
+						<li><a href="{{URL_ROOT}}/myslides/"><i class="icon-heart"></i> My Favorites</a></li>
+						<li class="divider"></li>
+					{% endif %}	
+					
+					{% regroup collections by category as collections_list %}
+					
+					{% for c in collections_list %}
+						{% if c.grouper %}
+							<li class="divider"></li>
+							<li class="dropdown-submenu">
+							<a tabindex="-1" href="#">{{ c.grouper }}</a>
+							<ul class="dropdown-menu">
+						{%endif%}		
+							{% for item in c.list %}
+							  <li  {%ifequal collectionslide.collection.id item.id %}class="active"{%endifequal%}><a href="{{URL_ROOT}}/collection/{{item.id}}/{%ifequal collectionslide.collection.id|stringformat:"d" item.id|stringformat:"d" %}{% if page %}?page={{page}}{%endif%}{%endifequal%}">{{item.label}}</a></li>
+							{% endfor %}
+						{% if c.grouper %}
+							</ul>
+							</li>
+						{%endif%}	
+					{% endfor %}
+					
+				</ul>
+			</li>
+
+			{% if user.is_authenticated and FOLLOWS_ACTIVE %}
+				<li class="dropdown" id ="followparent">{% include followtemplate %}</li>
+			{% endif %}	
+			
+	
+			<li></li>
+			{% if user.is_authenticated and EXAMS_ACTIVE %}
+				<li> <a href="{{URL_ROOT}}/exam/">Exams</a></li>
+			{% endif %}
+
+			{% if user.is_superuser %}
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle"  data-toggle="dropdown" >Admin <b class="caret"></b>
+					</a>
+					<ul class="dropdown-menu">			
+						<li><a href="{{URL_ROOT}}/admin/" target="_blank">Django Admin Site</a></li>					
+						<li><a href="{{URL_ROOT}}/dashboard/" > VM Dashboard</a></li>					
+						<li><a href="https://www.google.com/analytics/web/?pli=1#report/visitors-overview/a87982w27397188p63518063/" target="_blank">Google Analytics</a></li>					
+					</ul>
+				</li>		
+				
+			{% endif %}
+			
+			<li class="dropdown">
+				<a href="#" class="dropdown-toggle"  data-toggle="dropdown" >Help <b class="caret"></b>
+				</a>
+				<ul class="dropdown-menu">			
+					<li><a href="http://dei.med.nyu.edu/help/virtualmicroscope" target="_blank"><i class="icon-question-sign"></i> Help and Documentation Site</a></li>					
+					<li><a href="mailto:nyu_vp21@campusinformatics.org" ><i class="icon-envelope"></i> Email Us</a></li>					
+				</ul>
+			</li>			
+			
+		</ul>			
+		<form class="navbar-search pull-left" action="{{URL_ROOT}}/search/" method="GET">
+		<input class="search-query span2" placeholder="Search" type="text" id="q" name="q">
+		</form>
+		 {% if user.is_authenticated %}
+			<p class="navbar-text pull-right">Logged in as <a href="{{URL_ROOT}}/cas/logout/">{% if user.first_name %}{{user.first_name}}{% else %}{{user.username}}{% endif %}</a></p>
+		 {%else%}
+			<p class="navbar-text pull-right"><a href="{{login_url}}" class="pull-right">Login</a></p>
+		{% endif %}	
+				            
+	  </div>
+
+	</div>
+  </div>
+</div>
+
+{% endif %}
+<div class="{% block layout%}container-fluid{% endblock layout%}">
+	{% block content %}{% endblock content%}
+	<footer class="footer">
+		<hr>
+		Beta 2.0  An <a href="http://dei.med.nyu.edu" target="_blank">NYUSM Division of Educational Informatics</a> project.
+	</footer>	
+	
+</div>
+{% block slideviewer %}{% endblock slideviewer%}
+<div id="metadatamodal" class="modal hide" data-backdrop="true" style="max-height: 800px;"></div>
+</body>
+</html>

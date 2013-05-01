@@ -1,0 +1,11 @@
+<li style="position: relative;" {%if id%}id="item_{{id}}"{%endif%}>
+	<div class="thumbnail" style="width:200px;height:260px;position: relative;overflow:hidden;">
+		<a href="{{URL_ROOT}}/v/{{s.id}}/{{urlparams}}{%if page%}?p={{page}}{%endif%}"><img src="{% if view.tile %}{{view.tile}}{%else%}{{s.slide.thumbnail_path}}{%endif%}" width="200" height="200"></a>
+		<div>		
+			<a href="{{URL_ROOT}}/v/{{s.id}}/{{urlparams}}{%if page%}?p={{page}}{%endif%}">{% if view.title %}{{view.title|truncatechars:30}}{%else%}{{s|default:"&nbsp;"|truncatechars:30 }}{%endif%}</a>
+			{% if s.slidenumber %}
+				<br>Number: {{s.slidenumber}}
+			{% endif %}
+		</div>
+		<a class="{%if view %}favoriteview{%else%}metadata{%endif%}" id="{%if view %}{{view.id}}{%else%}{{s.id}}{%endif%}" href="#"><div class="label metadatalink">{%if view %}View{%else%}Slide{%endif%} Information</div></a>
+</li>

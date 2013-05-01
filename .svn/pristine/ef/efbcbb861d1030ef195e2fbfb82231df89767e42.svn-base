@@ -1,0 +1,76 @@
+<form class="form-vertical yui-skin-sam" id="markereditorform" action="{{URL_ROOT}}/editmarkersubmit/{{slidemarker.id}}/" name="markereditorform" method="POST" >
+
+	<label class="control-label"><h5>What type of marker should this be?</h5></label>
+	<div class="controls">
+	  <label class="radio">
+		<input name="markertypeinput" class = "selectorradio" id="markertypeinput1" value="1" {%ifequal slidemarker.type 1 %}checked="checked"{%endifequal%} type="radio">
+		Information marker: <i>Point out interesting features on the slide</i>
+	  </label>
+	  <label class="radio">
+		<input name="markertypeinput" class = "selectorradio"  id="markertypeinput2" value="2"  {%ifequal slidemarker.type 2 %}checked="checked"{%endifequal%} type="radio">
+		Assessment marker: <i>Users are asked a question and see the correct answer/feedback after they respond</i>
+	  </label>
+	  
+	  
+		<p class="help-block hide" id="markertypeerror" style="color:red;">Please choose a marker type.</p>
+	</div>
+	</div>
+
+	<div class="control-group">
+		<label class="control-label" for="markerlabelinput" id="stemlabel"  style="font-weight:bold;">{%ifequal slidemarker.type 2 %}Question{%else%}Title{%endifequal%}</label>
+		<div class="controls">
+		<input type="text" class="span6 input-error" id="markerlabelinput" name="markerlabelinput" value="{{slidemarker.label|default_if_none:''}}">
+		<p class="help-block hide" id="markertitleerror" style="color:red;">A title is required.</p>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="markerhtmlinput" id="htmllabel" style="font-weight:bold;">{%ifequal slidemarker.type 2 %}Answer/Feedback{%else%}Content/Description{%endifequal%}</label>
+		<div class="controls">
+		<textarea class="span6" id="markerhtmlinput" name="markerhtmlinput" rows="6" cols="85">{{slidemarker.html|default_if_none:''}}</textarea>
+		<p class="help-block hide" id="htmldescription"><i>Students see this after they submit their answer to the question.</i></p>
+		</div>
+	</div>          
+	
+	<div class="pull-right">
+		<button type="submit" class="btn btn-primary">Save changes</button>
+		<a href="#" class="btn" data-dismiss="modal">Cancel</a>
+	</div>
+</form>
+<br><br>
+<script>
+$('.selectorradio').click(function() {
+    if ($(this).val() === '1') {
+     $('#stemlabel').html('Title');
+     $('#htmllabel').html('Content/Description');
+     $('#htmldescription').hide();
+    } else if ($(this).val() === '2') {
+     $('#stemlabel').html('Question');
+     $('#htmllabel').html('Answer/Feedback');
+     $('#htmldescription').show();
+    } 
+  });
+  
+  $(document).ready(function() {
+  	//prepare the marker editor
+	$('#markerhtmlinput').wysihtml5({
+	"font-styles": false, //Font styling, e.g. h1, h2, etc. Default true
+	"emphasis": true, //Italics, bold, etc. Default true
+	"lists": true, //(Un)ordered lists, e.g. Bullets, Numbers. Default true
+	"html": true, //Button which allows you to edit the generated HTML. Default false
+	"link": true, //Button to insert a link. Default true
+	"image": true, //Button to insert an image. Default true,
+	"color": false //Button to change color of font  
+	});
+
+
+	var options = { 
+        beforeSubmit:  validatemarkereditor ,// pre-submit callback 
+         success:       markereditsuccess  // post-submit callback 
+     }; 
+    // bind form using 'ajaxForm' 
+    $('#markereditorform').ajaxForm(options); 		
+
+ }); 
+  
+  
+</script>
