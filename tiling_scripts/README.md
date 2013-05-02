@@ -52,8 +52,8 @@ where dir contains the Bacus Lab directories to be processed and outdir is the d
 Details
 -------
 
-Because the source image files can be quite large, this script uses the [http://www.vips.ecs.soton.ac.uk/index.php?title=Libvips libvips image processing library] which handles processing large images without constraints on physical memory. 
+Because the source image files can be quite large, this script uses the [libvips image processing library](http://www.vips.ecs.soton.ac.uk/index.php?title=Libvips) which handles processing large images without constraints on physical memory. 
 
-The source SVS images are TIFF files with multiple pages compressed using the JPEG or  JPEG2000 codec. If the images are compressed using JPEG2000, the [http://www.aperio.com/bigtiff/ BigTIFF] version of libtiff will be required. If the images are compressed using the "33003" or "33005" codec, [OpenSlide](http://openslide.org/) python bindings are used to create an uncompressed TIFF. See the documentation on the [OpenSlide](http://openslide.org/formats/aperio/) site for more information.
+The source SVS images are TIFF files with multiple pages compressed using the JPEG or JPEG2000 codec. If the images are compressed using JPEG2000, the [BigTIFF](http://bigtiff.org/) version of libtiff will be required. If the images are compressed using the "33003" or "33005" codec, [OpenSlide](http://openslide.org/) python bindings are used to create an uncompressed TIFF. See the documentation on the [OpenSlide](http://openslide.org/formats/aperio/) site for more information.
 
 The naming convention of the resultant 256 x 256 pixel tiles jpeg files is "tile_z_x_y.jpg" where z is the zoom level and x and y are the x and y coordinates of the tile. Because the Google Maps API assumes square source images, the x and y coordinates are offset to make the tile set appear square at a particular zoom level. Missing "virtual" tiles will be displayed as black tiles but no such tile file will exist. This saves on disk space and processing time.
