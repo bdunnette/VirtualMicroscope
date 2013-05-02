@@ -3,9 +3,8 @@ VirtualMicroscope
 This application was created by the NYU School of Medicine Division of Educational Informatics: William Holloway and Marc Triola MD. The Virtual Microscope uses the Google Maps API to display, annotate, and navigate scanned slides. The working NYU site is available here: http://cloud.med.nyu.edu/virtualmicroscope/
 
 This project consists of two components:
-
-A Python script to convert slide files obtained by scanners from Aperio and Bacus Labs into a format compatible with the Google Maps API.
-An example viewer upon which you can base your local instance
+  * A Python script to convert slide files obtained by scanners from Aperio and Bacus Labs into a format compatible with the Google Maps API.
+  * An example viewer upon which you can base your local instance
 
 Installation
 ------------
