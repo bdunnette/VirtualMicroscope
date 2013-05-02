@@ -37,12 +37,14 @@ Usage
 -----
 
 For Aperio SVS files:
+
     python process_aperio.py [--dir dir] [--outdir outdir] 
 
 where dir contains the Aperio SVS files to be processed and outdir is the directory where the processed images fill will be placed.
 
 
 For Bacus Labs files:
+
     python process_bacus.py [--dir dir] [--outdir outdir] 
 
 where dir contains the Bacus Lab directories to be processed and outdir is the directory where the processed images fill will be placed.
