@@ -1,6 +1,14 @@
 VirtualMicroscope
 =================
-This application was developed by an academic lab for our specific educational environment. This software will not run 'out of the box' at your school - you will need technical staff proficient in Python, Django, and general web technologies to set up and integrate it into your local environment.
+This application was created by the NYU School of Medicine Division of Educational Informatics: William Holloway and Marc Triola MD. The Virtual Microscope uses the Google Maps API to display, annotate, and navigate scanned slides. The working NYU site is available here: http://cloud.med.nyu.edu/virtualmicroscope/
+
+This project consists of two components:
+
+A Python script to convert slide files obtained by scanners from Aperio and Bacus Labs into a format compatible with the Google Maps API.
+An example viewer upon which you can base your local instance
+
+Installation
+------------
 
 1.  Set up your development machine with Python, MySQL, Python Imaging Library, and Django (now requires version 1.4 or greater). Django Guides:
 [Django Quick install guide](https://docs.djangoproject.com/en/1.5/intro/install/)
