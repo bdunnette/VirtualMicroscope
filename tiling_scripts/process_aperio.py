@@ -82,8 +82,8 @@ if __name__ == '__main__':
         print ('No output directory specified. Using default directory: ' + out_dir)
         for file in os.listdir(src_dir):
             print 'Processing: ' + file
-           file = os.path.join(src_dir, file)
-           process_svs(file, out_dir, base_dir)
+            file = os.path.join(src_dir, file)
+            process_svs(file, out_dir, base_dir)
     except Exception, e:
         print 'Could not process images in %s: %s' % (options.dir, str(e))
 
