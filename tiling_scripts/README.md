@@ -1,7 +1,7 @@
 Introduction
 ============
 
-The SVS_tiler.py script is a python script which will convert digitized microscope slides from the [http://www.aperio.com/ Aperio ScanScope Virtual Slide] (.SVS) format into 256x256 pixel jpeg tiles suitable for use within a [http://code.google.com/apis/maps/ Google Maps API] web-based viewer. 
+The SVS_tiler.py script is a python script which will convert digitized microscope slides from the [http://www.aperio.com/](Aperio ScanScope Virtual Slide) (.SVS) format into 256x256 pixel jpeg tiles suitable for use within a [http://code.google.com/apis/maps/](Google Maps API) web-based viewer. 
 
 The tiler source code is located in the tiling_scripts directory of the trunk.
 
@@ -13,9 +13,9 @@ This script has been tested on Ubuntu and CentOS linux. Your mileage may vary.
 Requirements
 ------------
 
-  * [http://www.python.org/download/ Python 2.5] or above
-  * [http://www.vips.ecs.soton.ac.uk/vips-7.12/ libvips]
-  * [http://www.libtiff.org/ libtiff] or [http://www.aperio.com/bigtiff BigTIFF]
+  * [http://www.python.org/download/](Python 2.5) or above
+  * [http://www.vips.ecs.soton.ac.uk/vips-7.12/](libvips)
+  * [http://www.libtiff.org/](libtiff) or [http://www.aperio.com/bigtiff](BigTIFF)
   * [http://www.ijg.org/ libjpeg]
   * [http://www.imagemagick.org/ ImageMagick]
   * [http://openslide.org/ OpenSlide] and [http://www.osc.edu/~kerwin/pyOpenSlide/ pyOpenSlide] python bindings (only needed for SVS files compressed with the "33003" or "33005" codec)
