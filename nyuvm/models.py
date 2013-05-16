@@ -6,6 +6,7 @@ from django.core.files import File
 
 import os
 import urllib
+from django.utils.timezone import now
 
 CACHED_THUMBNAILS=getattr(settings, 'CACHED_THUMBNAILS', False)
 
@@ -123,7 +124,7 @@ class SlideMarker(models.Model):
 	lat = models.FloatField()
 	lng = models.FloatField()
 	zoom = models.IntegerField(blank=True, null=True)
-	timestamp = models.DateTimeField(auto_now_add=True)
+	timestamp = models.DateTimeField(default=now())
 	score = models.IntegerField(default=0, null=True)
 	voters =  models.ManyToManyField(User,blank=True,  null=True, related_name='marker_voters')
 	original_author =  models.ForeignKey(User, null=True, related_name="orginal_user", on_delete=models.DO_NOTHING)

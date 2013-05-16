@@ -12,6 +12,7 @@ from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404,render_to_response
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.cache import cache_page
+from django.utils.timezone import now
  
 import re
 import datetime
@@ -72,7 +73,7 @@ def generate(request,template_name,template_values={}):
 	followtemplate = None
 	if request.user.is_authenticated():
 		if FOLLOWS_ACTIVE:
-			follows = Follow.objects.filter(active=True,starttime__gt=datetime.datetime.now()- datetime.timedelta(minutes=FOLLOW_EXPIRE))
+			follows = Follow.objects.filter(active=True,starttime__gt=now()- datetime.timedelta(minutes=FOLLOW_EXPIRE))
 			followtemplate = "follow/follow_menu.html"
 		collections = Collection.objects.all().order_by('category','label')
 	else:
@@ -253,6 +254,7 @@ def CreateMarker(request, collectionslideid):
 			newmarker.lat = request.POST["lat"]
 			newmarker.lng = request.POST["lng"]
 			newmarker.zoom = request.POST["zoom"]
+                        newmarker.timestamp = now()
 			
 			#community markers are private by default
 			if (request.user not in collectionslide.collection.authors.all()):
@@ -349,7 +351,7 @@ def SerializeMarkers(request, collectionslideid):
 	themarkers = collectionslide.markers.all().filter(deleted_by__isnull=True)	
 	if request.user.is_authenticated(): 
 		themarkers = themarkers.exclude(~Q(author = request.user),public=False) #exclude markers marked private
-		themarkers = themarkers.exclude(~Q(author = request.user),~Q(author__in=collectionslide.collection.authors.all()), timestamp__lt=datetime.datetime.now()- datetime.timedelta(days=COMM_MARKER_EXPIRE)) #exclude community markers that are over COMM_MARKER_EXPIRE threshhold
+		themarkers = themarkers.exclude(~Q(author = request.user),~Q(author__in=collectionslide.collection.authors.all()), timestamp__lt=now()- datetime.timedelta(days=COMM_MARKER_EXPIRE)) #exclude community markers that are over COMM_MARKER_EXPIRE threshhold
 		themarkers = themarkers.exclude(~Q(author = request.user),score__lt=-4) #exclude markers that have a score of less than -4
 		themarkers = themarkers.exclude(~Q(author = request.user),label__isnull=True)
 	else:
@@ -378,7 +380,7 @@ def MarkerInfoWindow(request, slidemarkerid):
 		if FavoriteMarker.objects.filter(user=request.user,marker=slidemarker):
 			alreadyfavorite=True
 		#if its a student marker and is expired	
-		if (slidemarker.timestamp < (datetime.datetime.now()- datetime.timedelta(days=COMM_MARKER_EXPIRE))) and (request.user not in authors):
+		if (slidemarker.timestamp < (now()- datetime.timedelta(days=COMM_MARKER_EXPIRE))) and (request.user not in authors):
 			expired=True
 
 		#if its score is too low

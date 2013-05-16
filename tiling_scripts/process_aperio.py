@@ -44,7 +44,7 @@ def process_svs(file, out_dir, base_dir):
     os.system('rm x*.tif')
 
     tmp_file = os.path.join(out_dir, 'tmp.tif')
-    tile(tmp_file, out_dir, True)
+    tile(tmp_file, out_dir, True, True)
 
 
 # Main processing

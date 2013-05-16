@@ -92,7 +92,7 @@ def is_blank_tile(tile_file):
 def tile(tif_file, out_dir, remove_blank_tiles=0, verbose=0):
 
     if bool(verbose):
-        print 'tiliing image ' + tif_file
+        print 'tiling image ' + tif_file
 
     if not known_codec(tif_file):
         if verbose:
@@ -179,7 +179,11 @@ def tile(tif_file, out_dir, remove_blank_tiles=0, verbose=0):
             y_delta = 0
 
         for y in range(y_offset, tiles - y_offset):
+            if bool(verbose):
+                print 'Processing row ' + str(y)
             for x in range(x_offset, tiles - x_offset):
+                if bool(verbose):
+                    print 'Processing column ' + str(x)
                 left = x * tile_dim
                 if y > y_delta:
                     top = (y - y_delta) * tile_dim
