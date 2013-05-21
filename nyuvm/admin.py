@@ -8,7 +8,8 @@ admin.site.register(Slide, SlideAdmin)
 
 class CollectionSlideAdmin(admin.ModelAdmin):
     exclude = ('viewcount',)
-    list_display = ('label', 'slide', 'collection',)
+    list_display = ('label', 'slide', 'collection', 'diagnosis', 'sequence',)
+    list_filter = ('collection',)
 admin.site.register(CollectionSlide, CollectionSlideAdmin)
 
 class CollectionAdmin(admin.ModelAdmin):
