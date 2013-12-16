@@ -1,4 +1,8 @@
-from django.conf.urls.defaults import *
+# Uncomment the following line if using Django <= 1.5
+#from django.conf.urls.defaults import *
+# Uncomment the following line if using Django >= 1.6
+from django.conf.urls import *
+
 from nyuvm.views import *
 
 urlpatterns = patterns('',
