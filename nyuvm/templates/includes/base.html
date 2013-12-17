@@ -96,103 +96,49 @@
 
 {% if not compact %}
 
-<div class="navbar navbar-inverse navbar-static-top">
-  <div class="navbar-inner" >
-	<div class="container-fluid">
-	  <a href="{{URL_ROOT}}/" class="brand">Virtual Microscope</a>
-	  <div class="nav-collapse">
-		<ul class="nav">
-			<li class="dropdown">
-				<a href="#" class="dropdown-toggle"  data-toggle="dropdown">Collections <b class="caret"></b>
-				</a>
-				<ul class="dropdown-menu">
-					{%if collectionslide.collection %}
-					<li ><a href="{{URL_ROOT}}/collection/{{collectionslide.collection.id}}/{% if page %}?page={{page}}{%endif%}"><span style="font-weight:bold;color:#1900A9";">Return to {{collectionslide.collection}}</b></font></a></li>
-					<li class="divider"></li>
-					{%endif%}
-								
-					{% if user.is_authenticated %}
-						<li><a href="{{URL_ROOT}}/myslides/"><i class="icon-heart"></i> My Favorites</a></li>
-						<li class="divider"></li>
-					{% endif %}	
-					
-					{% regroup collections by category as collections_list %}
-					
-					{% for c in collections_list %}
-						{% if c.grouper %}
-							<li class="divider"></li>
-							<li class="dropdown-submenu">
-							<a tabindex="-1" href="#">{{ c.grouper }}</a>
-							<ul class="dropdown-menu">
-						{%endif%}		
-							{% for item in c.list %}
-							  <li  {%ifequal collectionslide.collection.id item.id %}class="active"{%endifequal%}><a href="{{URL_ROOT}}/collection/{{item.id}}/{%ifequal collectionslide.collection.id|stringformat:"d" item.id|stringformat:"d" %}{% if page %}?page={{page}}{%endif%}{%endifequal%}">{{item.label}}</a></li>
-							{% endfor %}
-						{% if c.grouper %}
-							</ul>
-							</li>
-						{%endif%}	
-					{% endfor %}
-					
-				</ul>
-			</li>
-
-			{% if user.is_authenticated and FOLLOWS_ACTIVE %}
-				<li class="dropdown" id ="followparent">{% include followtemplate %}</li>
-			{% endif %}	
-			
-	
-			<li></li>
-			{% if user.is_authenticated and EXAMS_ACTIVE %}
-				<li> <a href="{{URL_ROOT}}/exam/">Exams</a></li>
-			{% endif %}
-
-			{% if user.is_superuser %}
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle"  data-toggle="dropdown" >Admin <b class="caret"></b>
-					</a>
-					<ul class="dropdown-menu">			
-						<li><a href="{{URL_ROOT}}/../admin/" target="_blank">Django Admin Site</a></li>					
-						<li><a href="{{URL_ROOT}}/dashboard/" > VM Dashboard</a></li>					
-						<li><a href="https://www.google.com/analytics/web/?pli=1#report/visitors-overview/a87982w27397188p63518063/" target="_blank">Google Analytics</a></li>					
-					</ul>
-				</li>		
-				
-			{% endif %}
-			
-			<li class="dropdown">
-				<a href="#" class="dropdown-toggle"  data-toggle="dropdown" >Help <b class="caret"></b>
-				</a>
-				<ul class="dropdown-menu">			
-					<li><a href="http://dei.med.nyu.edu/help/virtualmicroscope" target="_blank"><i class="icon-question-sign"></i> Help and Documentation Site</a></li>					
-					<li><a href="mailto:nyu_vp21@campusinformatics.org" ><i class="icon-envelope"></i> Email Us</a></li>					
-				</ul>
-			</li>			
-			
-		</ul>			
-		<form class="navbar-search pull-left" action="{{URL_ROOT}}/search/" method="GET">
-		<input class="search-query span2" placeholder="Search" type="text" id="q" name="q">
-		</form>
-		 {% if user.is_authenticated %}
-			<p class="navbar-text pull-right">Logged in as <a href="{{URL_ROOT}}/cas/logout/">{% if user.first_name %}{{user.first_name}}{% else %}{{user.username}}{% endif %}</a></p>
-		 {%else%}
-			<p class="navbar-text pull-right"><a href="{{login_url}}" class="pull-right">Login</a></p>
-		{% endif %}	
-				            
-	  </div>
-
-	</div>
+<nav class="navbar navbar-default" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="#">Virtual Microscope</a>
   </div>
-</div>
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <ul class="nav navbar-nav">
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Collections <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Action</a></li>
+          <li><a href="#">Another action</a></li>
+          <li><a href="#">Something else here</a></li>
+          <li class="divider"></li>
+          <li><a href="#">Separated link</a></li>
+          <li class="divider"></li>
+          <li><a href="#">One more separated link</a></li>
+        </ul>
+      </li>
+    </ul>
+    <form class="navbar-form navbar-right" role="search">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Search">
+      </div>
+      <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+    
+  </div><!-- /.navbar-collapse -->
+</nav>
 
 {% endif %}
-<div class="{% block layout%}container-fluid{% endblock layout%}">
+<div class="{% block layout%}container{% endblock layout%}">
 	{% block content %}{% endblock content%}
 	<footer class="footer">
-		<hr>
-		v2.0  An <a href="http://dei.med.nyu.edu" target="_blank">NYUSM Division of Educational Informatics</a> project.
 	</footer>	
-	
 </div>
 {% block slideviewer %}{% endblock slideviewer%}
 <div id="metadatamodal" class="modal hide" data-backdrop="true" style="max-height: 800px;"></div>
