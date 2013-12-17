@@ -1,3 +1,5 @@
 pillow
 django-compressor
+django-jquery
+django-bootstrap3
 django-leaflet
